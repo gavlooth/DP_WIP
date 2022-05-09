@@ -1,0 +1,25 @@
+#!/bin/fish
+
+swig -c++ -mzscheme -declaremodule  gbwtgraph.i;
+
+raco ctool ++ccf  -fpermissive ++ccf -lstdc++  --cc --cgc  gbwtgraph_wrap.cxx ;
+
+g++ -o gbwtgraph.so -Wl,--whole-archive \
+                /usr/local/lib/libgbwtgraph.a \
+                /usr/local/lib/libhandlegraph.a \
+                /usr/local/lib/libsdsl.a \
+                /usr/local/lib/libgbwt.a -Wl,--no-whole-archive -shared  ~/.local/lib/racket/mzdyn.o  gbwtgraph_wrap.o  -pthread -fopenmp
+
+
+
+set modulePath  (racket -e '(string->symbol (path->string (build-path "compiled" "native" (system-library-subpath))))' | cut -c2-)
+
+mkdir -p  $modulePath
+
+mv gbwtgraph.so  $modulePath
+
+rsync -av  compiled ../privacy-pangenomics/    | pv
+
+
+# rsync -vrltD --stats --human-readable  compiled ../privacy-pangenomics/  | pv
+
