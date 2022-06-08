@@ -66,7 +66,8 @@ $result = scheme_result;
 %typemap(in) vector<long long int>  {
         Scheme_Object* the_list = $input;
         int lg = (int) scheme_list_length( $input);
-        std::vector<long long int> *return_val ;
+        std::vector<long long int> *return_val = new (std::vector<long long int>);
+
         long long int *tmp;
         for(int i = 0; i < lg ; ++i)
         {
@@ -80,43 +81,22 @@ $result = scheme_result;
 };
 
 
+%typemap(in) vector<double>  {
+
+        Scheme_Object* the_list = $input;
+        int lg = (int) scheme_list_length($input);
+        std::vector<double>* return_val =  new (std::vector<double>);
+        double tmp;
+
+        for(int i = 0; i < lg ; ++i)
+        {
+                return_val->push_back( scheme_real_to_double(scheme_car(the_list)));
+                the_list = scheme_cdr(the_list) ;
+        }
 
 
-
-
-
-/* %typemap(out)  std::vector<handle_t> */
-/* { */
-/*  */
-/* int vector_size=$1.size(); */
-/* Scheme_Object* list_out[vector_size] ; */
-/*  */
-/* for(std::size_t i = 0; i < vector_size; ++i) { */
-/*         Scheme_Object* scheme_pair; */
-/*         uint64_t tmp = reinterpret_cast<uint64_t&>($1.at(i)) >> 1 ; */
-/*         bool tmp2 = reinterpret_cast<uint64_t&>($1.at(i)) & 1 ; */
-/*         Scheme_Object* orientation; */
-/*         Scheme_Object* scheme_integer = scheme_make_integer_value(tmp); */
-/*  */
-/*         if(tmp2) */
-/*         { */
-/*                 orientation =  scheme_make_byte_string("-")  ; */
-/*         } */
-/*         else */
-/*         { */
-/*  */
-/*                 orientation = scheme_make_byte_string("+") ; */
-/*         } */
-/*         scheme_pair = scheme_make_pair(orientation, scheme_integer) ; */
-/*         list_out[i] = scheme_pair; */
-/* } */
-/*  */
-/*  */
-/* Scheme_Object* scheme_result =  scheme_build_list ( vector_size , list_out); */
-/* $result = scheme_result; */
-/* }; */
-
-
+        $1 = *return_val ;
+};
 
 
 
@@ -131,6 +111,7 @@ $result = scheme_result;
         typedef std::pair<size_type , size_type> range_type ;
 
 %}  ;
+
 
 
 
@@ -365,7 +346,8 @@ GBWT gfa_to_gbwt (char* file)
 }
 
 
-vector<void *> sample_distribution (vector<float> weights, vector<void*> nodes, int number_of_draws){
+
+vector<void *> sample_distribution (vector<double> weights, vector<void*> nodes, int number_of_draws){
         std::random_device rd;
         std::mt19937 gen(rd());
         std::discrete_distribution<> d(weights.begin(), weights.end());
@@ -375,8 +357,11 @@ vector<void *> sample_distribution (vector<float> weights, vector<void*> nodes, 
                 sample_container->push_back(nodes[d(gen)]);
         };
 
+
       return *sample_container;
 }
+
+
 
 
 
@@ -518,6 +503,9 @@ typedef const handle_t& ref_handle ;
         $result = scheme_result;
 };
 
+
+
+/*  vector<float> weights */
 
 
 
@@ -880,11 +868,8 @@ struct SearchState
 };
 
 
-vector<void*> sample_distribution (vector<float> weights, vector<void*> nodes, int number_of_draws);
+vector<void*> sample_distribution (vector<double> weights, vector<void*> nodes, int number_of_draws);
 
-/* nid_t test_vector (vector<nid_t> nodes); */
-
-/* vector<void*> vector_test (vector<void*> tmp) ; */
 
 
 range_type SearchState_get_range (SearchState* state);
