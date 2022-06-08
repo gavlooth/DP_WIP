@@ -78,7 +78,9 @@ RUN cd gbwtgraph   && rsync -av include/gbwtgraph /usr/local/include  \
                    && ./install.sh /usr/local
 
 
-RUN curl -LO https://gist.githubusercontent.com/Gavlooth/f37bb312c5d163b1d889cdb6fd7b4df5/raw/71e69464f9f8148c9a2fd01e59967fde04f047d8/gbwtgraph.i
+# RUN curl -LO https://gist.githubusercontent.com/Gavlooth/f37bb312c5d163b1d889cdb6fd7b4df5/raw/71e69464f9f8148c9a2fd01e59967fde04f047d8/gbwtgraph.i
+
+COPY gbwtgraph.i ./gbwtgraph.i
 
 RUN apt-get install -yy libpcre++-dev
 
@@ -124,9 +126,13 @@ RUN mkdir -p privacy-pangenomics && rsync -av  compiled ../privacy-pangenomics/
 WORKDIR "privacy-pangenomics"
 
 
-RUN curl -LO https://gist.githubusercontent.com/Gavlooth/100319e862ac8ab07ae1f161c21c174f/raw/1dd5f74a345eee84284a13153b83e5a0c04d851a/diff-privacy.rkt
+# RUN curl -LO https://gist.githubusercontent.com/Gavlooth/100319e862ac8ab07ae1f161c21c174f/raw/1dd5f74a345eee84284a13153b83e5a0c04d851a/diff-privacy.rkt
 
-RUN curl -LO https://raw.githubusercontent.com/pangenome/privacy-pangenomics/master/cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa
+COPY diff-privacy.rkt ./diff-privacy.rkt
+
+# RUN curl -LO https://raw.githubusercontent.com/pangenome/privacy-pangenomics/master/cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa
+
+COPY cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa  ./cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa
 
 RUN raco pkg install pmap
 
