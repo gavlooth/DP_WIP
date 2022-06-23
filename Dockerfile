@@ -128,11 +128,10 @@ WORKDIR "privacy-pangenomics"
 
 # RUN curl -LO https://gist.githubusercontent.com/Gavlooth/100319e862ac8ab07ae1f161c21c174f/raw/1dd5f74a345eee84284a13153b83e5a0c04d851a/diff-privacy.rkt
 
-COPY diff-privacy.rkt ./diff-privacy.rkt
 
 # RUN curl -LO https://raw.githubusercontent.com/pangenome/privacy-pangenomics/master/cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa
 
-COPY cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa  ./cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa
+
 
 RUN raco pkg install pmap
 
@@ -141,6 +140,14 @@ RUN raco pkg install describe
 RUN raco pkg install date
 
 # RUN raco pkg install math-lib
+
+COPY diff-privacy.rkt ./diff-privacy.rkt
+
+COPY cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa  ./cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa
+
+COPY cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa.sha256  ./cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa.sha256
+RUN sha512sum  -c  cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa.sha256
+
 
 RUN  racket diff-privacy.rkt   > /dev/null
 RUN cat  sampled_frequencies
