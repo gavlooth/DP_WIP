@@ -1,8 +1,8 @@
-FROM debian:bookworm-slim AS binary
+FROM debian:testing-slim AS binary
 
 LABEL authors="Erik Garrison, Christos Chatzifountas"
 LABEL description="Preliminary docker image containing all requirements for bgwt"
-LABEL base_image="debian:bullseye-slim"
+LABEL base_image="debian:testing-slim"
 LABEL about.home="https://github.com/pangenome/privacy-pangenomics"
 LABEL about.license="SPDX:MIT"
 
@@ -27,7 +27,7 @@ RUN apt-get install -yy bash
 
 RUN apt-get install -yy cmake make
 
-RUN apt-get install -yy  gcc-11 g++-11 build-essential time curl
+RUN apt-get install -yy  gcc g++ build-essential time curl
 
 RUN apt install -yy emacs elpa-racket-mode
 
