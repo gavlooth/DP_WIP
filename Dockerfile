@@ -25,6 +25,8 @@ RUN apt-get install -yy git
 
 RUN apt-get install -yy bash
 
+RUN apt-get install -yy wget
+
 RUN apt-get install -yy cmake make
 
 RUN apt-get install -yy  gcc-11 g++-11 build-essential time curl
@@ -143,11 +145,12 @@ RUN raco pkg install date
 
 COPY diff-privacy.rkt ./diff-privacy.rkt
 
-COPY cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa  ./cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa
 
-COPY cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa.sha256  ./cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa.sha256
-RUN sha512sum  -c  cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa.sha256
+RUN wget -c http://hypervolu.me/~erik/yeast/cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa.gz
+
+RUN gzip -d -f cerevisiae.pan.fa.0b30003.2ff309f.0967224.smooth.gfa.gz
 
 
-RUN  racket diff-privacy.rkt   > /dev/null
+RUN  racket diff-privacy.rkt  > /dev/null
+
 RUN cat  sampled_frequencies
